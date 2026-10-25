@@ -50,12 +50,11 @@ La page JSF, le CSS et le JavaScript fournis sont conservés. L'énoncé décrit
 
 ## Vérifications effectuées
 
-Voir `VALIDATION.md` pour les résultats. Les commits locaux suivent les étapes réelles de construction. La publication sur GitHub reste à faire : aucun dépôt distant n'a été créé, aucun push ni email n'a été envoyé.
+Voir `VALIDATION.md` pour les résultats. Les commits suivent les étapes réelles de construction. Dépôt GitHub du projet : https://github.com/Amine-kh1/TP0_doublediplomation. Aucun email n'a été envoyé à l'enseignant.
 
-Pour publier après création d'un dépôt GitHub vide :
+Le dépôt origin est déjà configuré. Pour envoyer de futurs commits :
 
 ```text
-git remote add origin URL_DU_DEPOT
 git push -u origin master
 ```
 

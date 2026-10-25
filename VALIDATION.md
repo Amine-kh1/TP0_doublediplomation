@@ -30,4 +30,4 @@ Les boutons JavaScript de copie et d'effacement sont ceux de l'énoncé ; les fi
 
 ## Point restant pour une remise
 
-Le dépôt Git est local, avec les commits des étapes. Aucun dépôt GitHub n'est encore lié et aucun push n'a été effectué. La coquille du service et la différence entre la description et le champ réponse sont expliquées dans README.md. Aucune demande d'accord ni aucun email n'a été envoyé à l'enseignant.
+Le dépôt Git conserve les commits des étapes. Dépôt distant configuré : https://github.com/Amine-kh1/TP0_doublediplomation. La coquille du service et la différence entre la description et le champ réponse sont expliquées dans README.md. Aucune demande d'accord ni aucun email n'a été envoyé à l'enseignant.
