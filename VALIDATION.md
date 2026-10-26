@@ -1,33 +1,30 @@
-# Validation du TP de base — 25 octobre 2026
+# Validation — 26 octobre 2026
 
-Environnement : Windows 10 Pro 22H2, Azul Zulu JDK 25.0.5, Maven 3.9.16 fourni avec IntelliJ IDEA 2026.2.3, Payara Server Web 7.2026.8 (build 16).
+Environnement : Windows 10 Pro 22H2, Azul Zulu JDK 25.0.5, Maven 3.9.16, Payara Web 7.2026.8 (build 16), Jakarta EE Web API 11.0.0 et PrimeFaces 16.0.1. Plugins Maven Compiler 3.16.0 et WAR 3.5.1. JUnit 4.13.2 est limité aux tests.
 
-Versions du projet : Jakarta EE Web API 11.0.0 (provided), PrimeFaces 16.0.1, Maven Compiler Plugin 3.16.0 (version stable) et Maven WAR Plugin 3.5.1. Versions vérifiées sur Maven Central lors de la réalisation.
+## Construction
 
-## Construction et déploiement
+Construction depuis zéro avec clean verify : BUILD SUCCESS. Trois tests JUnit exécutés, zéro échec, zéro erreur et aucun test ignoré. Ils couvrent les changements d'unité, zéro, les espaces autour de la saisie, les durées de plus de 24 heures, les formats invalides et les limites de long.
 
-- Construction finale depuis zéro : `clean package` avec Java 25 et compilation dans un processus javac séparé (`maven.compiler.fork=true`) — BUILD SUCCESS.
-- WAR : `target/tp0-khabot-amine.war`.
-- Déploiement final testé avec `deployer.ps1` — succès.
-- Accueil `/tp0-khabot-amine/` — HTTP 200, formulaire JSF affiché automatiquement.
-- Servlet personnalisé `/tp0-khabot-amine/hello-servlet` — HTTP 200, message de bienvenue Khabot Amine.
-- Inspection du journal Payara après les tests finaux : aucune erreur grave dans l'extrait courant.
+Le compilateur Java rencontrait un refus d'accès lors de la résolution des chemins dans le profil Windows. Les sources ont été recopiées sans modification dans C:\autresprogrammes\payara7.2026.8\verification-tp0\projet, avec un cache Maven isolé. La compilation complète et les tests ont réussi dans ce dossier autorisé. Les sources livrées sont celles de cette construction ; ce dossier ne fait pas partie du WAR.
 
-## Scénarios testés sur le vrai serveur par requêtes HTTP GET/POST
+## Déploiement et tests sur Payara
 
-- Les expressions EL sont remplacées par du HTML.
-- Sans rôle : « Vous devez indiquer le rôle de l'API ».
-- Avec rôle et question composée d'espaces : « Il manque le texte de la question ».
-- Première question `BONJOUR Amine` : rôle en majuscules puis question en minuscules, entourés de `||`.
-- La liste des rôles devient désactivée après le premier envoi.
-- Deuxième question `DEUXIEME QUESTION` : réponse exacte `||deuxieme question||`, sans répétition du rôle.
-- L'historique contient les deux échanges ; la portée view conserve l'état entre les requêtes.
-- Nouveau chat : question et conversation réinitialisées.
-- Les ressources CSS et JavaScript sont servies par Faces avec HTTP 200.
-- Interface contrôlée visuellement dans le navigateur : formulaire en deux colonnes conforme au code fourni. Une fenêtre étroite nécessite le défilement horizontal prévu par les tailles fixes du code.
+Déploiement du WAR sous /tp0-khabot-amine : succès. Le script scripts/verification-http.cjs a ensuite confirmé :
 
-Les boutons JavaScript de copie et d'effacement sont ceux de l'énoncé ; les fichiers sont servis correctement, mais les opérations du presse-papiers n'ont pas été testées. Aucun test unitaire n'est ajouté ; les scénarios ci-dessus sont des tests fonctionnels du serveur.
+- accueil JSF accessible et expressions EL remplacées par du HTML ;
+- rôle obligatoire et question vide refusée par le message global attendu ;
+- aucun échange ajouté pour une question vide ;
+- 3661 s = 1 h 1 min 1 s, puis 60 s = 0 h 1 min 0 s ;
+- rôle figé après le premier envoi et historique des conversions conservé ;
+- valeurs -1, 1.5 et bonjour refusées ;
+- dépassement de long pris en charge sans erreur serveur ;
+- zéro accepté après les erreurs ;
+- nouveau chat : question et conversation effacées, choix du rôle réactivé ;
+- ressources CSS et JavaScript accessibles avec HTTP 200.
 
-## Point restant pour une remise
+Les boutons de copie et d'effacement JavaScript sont ceux fournis. La distribution de leurs fichiers a été vérifiée ; les opérations du presse-papiers n'ont pas été testées. Les tests de la première version du TP de base, avant remplacement du service pour le bonus, sont décrits dans les commits précédents.
 
-Le dépôt Git conserve les commits des étapes. Dépôt distant configuré : https://github.com/Amine-kh1/TP0_doublediplomation. La coquille du service et la différence entre la description et le champ réponse sont expliquées dans README.md. Aucune demande d'accord ni aucun email n'a été envoyé à l'enseignant.
+## Compréhension et remise
+
+Les vérifications ci-dessus sont automatisées. La lecture personnelle du cours, la relecture du code et les essais dans le navigateur restent à effectuer par l'étudiant avant de présenter le travail comme personnellement vérifié. Un guide de compréhension est fourni dans docs/comprendre-le-tp.md. L'aide de l'IA est indiquée dans le README. Aucun email n'a été envoyé à l'enseignant.

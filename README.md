@@ -1,63 +1,50 @@
 # TP 0 — Khabot Amine
 
-Application du TP de base : Java 25, Jakarta EE 11, Jakarta Faces, CDI et PrimeFaces. Aucune partie bonus ni connexion à un LLM n'a été ajoutée.
+Java 25, Jakarta EE 11, Jakarta Faces, CDI, PrimeFaces et Payara 7.
 
-## Ouvrir dans IntelliJ
+Dépôt : https://github.com/Amine-kh1/TP0_doublediplomation
 
-1. File > Open : sélectionner ce dossier ou son fichier `pom.xml`, puis ouvrir comme projet Maven.
-2. Dans Project Structure > Project, choisir le SDK **Zulu 25**. Recharger le projet Maven.
-3. Dans Run > Edit Configurations, ajouter **Payara Server > Local**, nommer la configuration **tp0-khabot-amine** et sélectionner **Payara 7.2026.8**. Son dossier est `C:\autresprogrammes\payara7.2026.8\payara7`.
-4. Choisir le JRE **Zulu 25**, ajouter l'artifact WAR ou WAR exploded dans Deployment et choisir le contexte `/tp0-khabot-amine`.
-5. URL de lancement : `http://localhost:8080/tp0-khabot-amine/`.
+## Traitement choisi pour le bonus
 
-L'application a déjà été déployée et testée sur Payara. Si le serveur fonctionne déjà, utiliser sa page directement ou l'arrêter avant de laisser IntelliJ le démarrer.
+Convertir une durée entière en secondes en heures, minutes et secondes. Exemple : **3661 s = 1 h 1 min 1 s**. Le calcul utilise la division entière et le reste. Une durée de plus de 24 heures reste une durée : 90061 s = 25 h 1 min 1 s.
 
-## Construire et déployer sans l'IDE
+Zéro est accepté. Les valeurs négatives, décimales, non numériques ou supérieures à la capacité de long sont refusées avec un texte explicatif. Le formulaire du professeur et sa liste de rôles sont conservés ; le rôle n'intervient pas dans cette conversion.
 
-Dans un terminal PowerShell ouvert dans ce dossier :
+Le traitement a été choisi par l'étudiant et implémenté avec une assistance IA. Les tests automatisés présentés ici ne signifient pas que l'étudiant a effectué une vérification personnelle ou maîtrisé le cours. Le guide [comprendre le TP](docs/comprendre-le-tp.md) permet de relire le projet avec l'énoncé.
 
-```powershell
-.\construire.ps1
-.\deployer.ps1
-```
+## Ouvrir et exécuter
 
-Ces scripts utilisent les installations existantes de Java, Maven fourni avec IntelliJ et Payara. `deployer.ps1` démarre le domaine si nécessaire et ne remplace que l'application `tp0-khabot-amine`.
+1. Dans IntelliJ IDEA Ultimate, File > Open : ouvrir le dossier de ce projet ou pom.xml comme projet Maven.
+2. Choisir le SDK Zulu 25 et recharger Maven.
+3. Dans Run > Edit Configurations, ajouter Payara Server > Local, nommer la configuration tp0-khabot-amine et choisir Payara 7.2026.8, installé dans C:\autresprogrammes\payara7.2026.8\payara7.
+4. Choisir le JRE Zulu 25, puis ajouter le WAR ou WAR exploded dans Deployment avec le contexte /tp0-khabot-amine.
+5. URL : http://localhost:8080/tp0-khabot-amine/.
 
-Avec Maven disponible dans le PATH : `mvn clean package`. Le WAR se trouve dans `target/tp0-khabot-amine.war`. Les dépendances Jakarta EE sont fournies par Payara ; PrimeFaces est inclus dans le WAR.
+Sans IDE : utiliser construire.ps1 puis deployer.ps1 depuis le dossier du projet. Ces scripts utilisent les installations existantes et acceptent les chemins du JDK, de Maven ou de Payara en paramètres. Le WAR est produit dans target/tp0-khabot-amine.war. Un serveur déjà démarré peut être utilisé directement.
 
-## Fichiers à comprendre
+## Code et historique
 
-- `src/main/webapp/index.xhtml` : formulaire JSF fourni, liste de rôles PrimeFaces, question, réponse et historique.
-- `src/main/java/ma/emsi/khabotamine/tp0/jsf/Bb.java` : état de la conversation en portée `@ViewScoped`, validation, appel du service injecté et remise à zéro.
-- `src/main/java/ma/emsi/khabotamine/tp0/service/GenerateurReponse.java` : service `@Dependent`, question en minuscules entourée de `||`, rôle en majuscules seulement à la première réponse.
-- `src/main/webapp/resources/` : CSS et JavaScript fournis.
-- `src/main/webapp/WEB-INF/web.xml` : accueil sur `index.xhtml`.
-- `HelloServlet.java` et `index.jsp` sont conservés comme demandé. Le servlet affiche un message personnalisé et reste accessible à `/hello-servlet`.
+- index.xhtml et resources/ : page JSF, CSS et JavaScript fournis, conservés.
+- Bb.java : backing bean @Named et @ViewScoped. Sa logique fournie est conservée ; son commentaire décrit le nouveau traitement.
+- GenerateurReponse.java : service @Dependent injecté dans Bb. La logique a été remplacée pour réaliser le bonus, comme demandé dans cette section de l'énoncé.
+- HelloServlet.java et index.jsp : conservés ; le servlet affiche un message personnalisé à /hello-servlet.
+- web.xml : définit index.xhtml comme page d'accueil.
+- Les étapes de la partie de base et leur code restent consultables dans l'historique Git. Aucun historique n'a été réécrit.
 
-## Pourquoi une question vide affiche une erreur
+La première version du service fourni comportait une coquille : roleSystemAffiche au lieu de roleSystemeAffiche. La correction minimale de la version de base figure dans son commit ; le service d'origine est conservé dans docs/code-fourni/. La page fournie ne rend pas la réponse readonly, contrairement à sa description : elle est conservée telle quelle. Ces écarts doivent être signalés à l'enseignant ; aucun accord de sa part n'a été reçu.
 
-Dans `Bb.envoyer()`, `question == null || question.isBlank()` détecte une question absente, vide ou composée d'espaces. La méthode crée un `FacesMessage` de sévérité ERROR, avec le détail « Il manque le texte de la question », puis l'ajoute au contexte Faces avec `facesContext.addMessage(null, message)`. Le `null` en fait un message global. Le retour `null` maintient la même vue.
+## Question vide : les parties du code concernées
 
-Dans `index.xhtml`, `h:messages` affiche ce message global en rouge. `globalOnly="true"` sélectionne les messages globaux ; `showDetail="true"` et `showSummary="false"` affichent le détail plutôt que « Texte question vide ». La question n'a pas d'attribut `required` : sa validation est faite dans le backing bean.
+Dans Bb.envoyer(), question == null || question.isBlank() détecte la saisie vide. Un FacesMessage ERROR est créé avec le détail « Il manque le texte de la question ». facesContext.addMessage(null, message) en fait un message global et return null conserve la vue, sans appel du service ni ajout à la conversation.
 
-Le rôle suit un autre chemin : `required="true"` et `requiredMessage` sur `p:selectOneMenu`, puis `h:message for="rolesysteme"` affichent son erreur. Si le rôle est manquant, cette validation peut empêcher l'appel de `envoyer()` ; tester la question vide avec un rôle renseigné.
+Dans index.xhtml, h:messages affiche le message en rouge : globalOnly="true" sélectionne les messages globaux, showDetail="true" et showSummary="false" affichent le détail et errorStyle="color: red" fixe la couleur. La question n'a pas required : ce contrôle est dans le backing bean.
 
-## Écart à signaler à l'enseignant
+Le rôle a sa propre validation : required="true" et requiredMessage sur p:selectOneMenu, puis h:message for="rolesysteme". Si le rôle est absent, cette validation peut empêcher l'appel de envoyer(). Pour tester la question vide, renseigner d'abord le rôle.
 
-Le service fourni déclare `roleSystemeAffiche`, mais affecte `this.roleSystemAffiche = true`, variable inexistante. Pour compiler, une seule correction de nom a été faite : `this.roleSystemeAffiche = true`. Les versions originales sont conservées sous `docs/code-fourni/`. Les seules autres adaptations de ces classes concernent les packages et l'import pour inclure le nom de l'étudiant, comme demandé.
+## Tests
 
-La page JSF, le CSS et le JavaScript fournis sont conservés. L'énoncé décrit une réponse en lecture seule, mais son code ne met pas `readonly="true"` sur ce champ : le code fourni est conservé, sans changement fonctionnel supplémentaire. Demander l'accord de l'enseignant pour la correction de coquille avant une remise soumise à cette règle.
+Maven : mvn clean verify. Les tests JUnit sont dans src/test/java ; JUnit est une dépendance de test, absente du WAR. Après déploiement, le test HTTP d'intégration peut être lancé avec Node : node scripts/verification-http.cjs.
 
-## Vérifications effectuées
-
-Voir `VALIDATION.md` pour les résultats. Les commits suivent les étapes réelles de construction. Dépôt GitHub du projet : https://github.com/Amine-kh1/TP0_doublediplomation. Aucun email n'a été envoyé à l'enseignant.
-
-Le dépôt origin est déjà configuré. Pour envoyer de futurs commits :
-
-```text
-git push -u origin master
-```
-
-Le répertoire `target/` est ignoré par Git. Ne pas transmettre de token dans le code ou dans un email.
+Résultats et limites : [VALIDATION.md](VALIDATION.md). Aucun email n'a été envoyé automatiquement.
 
 Énoncé : http://richard.grin.free.fr/emsi/rabat-ia/tp/tp0-jakartaee/index.html
