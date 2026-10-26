@@ -113,9 +113,8 @@ public class Bb implements Serializable {
 
     /**
      * Envoie la question au serveur.
-     * En attendant de l'envoyer à un LLM, le serveur fait un traitement quelconque, juste pour tester :
-     * Le traitement consiste à copier la question en minuscules et à l'entourer avec "||". Le rôle système
-     * est ajouté au début de la première réponse.
+     * Le traitement choisi pour le bonus convertit le nombre de secondes saisi
+     * en heures, minutes et secondes. Il est délégué au service injecté.
      *
      * @return null pour rester sur la même page.
      */
